@@ -26,9 +26,9 @@ const TodoForm = () => {
   };
 
   const deleteTask = (taskName) => {
-    const newTodoList = todoList.filter((task)=>task.todoName !== taskName);
-    setToDoList(newTodoList)
-  }
+    const newTodoList = todoList.filter((task) => task.todoName !== taskName);
+    setToDoList(newTodoList);
+  };
 
   const editTask = (taskName) => {
     setEditMode(true);
@@ -56,16 +56,19 @@ const TodoForm = () => {
           {editMode ? "Update Task" : "Create Task"}
         </button>
       </form>
-      {todoList.map((singleToDo) => (
-        <div key={singleToDo.todoName} className="">
-          <ToDoShow
-            singleToDo={singleToDo}
-            deleteTask={deleteTask}
-            editTask={editTask}
-          />
-        </div>
-      ))}
+      <div className="flex flex-col space-y-4">
+        {todoList.map((singleToDo) => (
+          <div key={singleToDo.todoName}>
+            <ToDoShow
+              singleToDo={singleToDo}
+              deleteTask={deleteTask}
+              editTask={editTask}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
+
 export default TodoForm;
