@@ -26,7 +26,7 @@ const TodoForm = () => {
       setEditMode(false);
       setEditTaskName("");
     } else {
-      setToDoList([...todoList, { todoName: todo }]);
+      setToDoList([...todoList, { todoName: todo, completed: false }]);
     }
     setToDo("");
     setError("");
@@ -44,6 +44,16 @@ const TodoForm = () => {
     if (task) {
       setToDo(task.todoName);
     }
+  };
+
+  const markAsCompleted = (taskName) => {
+    const updatedList = todoList.map((task) => {
+      if (task.todoName === taskName) {
+        return { ...task, completed: true };
+      }
+      return task;
+    });
+    setToDoList(updatedList);
   };
 
   return (
@@ -70,6 +80,7 @@ const TodoForm = () => {
             singleToDo={singleToDo}
             deleteTask={deleteTask}
             editTask={editTask}
+            markAsCompleted={markAsCompleted}
           />
         </div>
       ))}
