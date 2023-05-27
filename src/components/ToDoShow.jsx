@@ -1,4 +1,6 @@
 import React from "react";
+import { AiFillEdit } from "react-icons/ai";
+import {  AiFillDelete } from "react-icons/ai";
 
 export default function ToDoShow({ singleToDo, deleteTask, editTask }) {
   const handleDelete = () => {
@@ -14,18 +16,18 @@ export default function ToDoShow({ singleToDo, deleteTask, editTask }) {
       <ul>
         <li className="bg-gray-400 text-white py-5 rounded-lg text-2xl px-5 flex justify-between">
           {singleToDo.todoName}
-          <div>
+          <div className="flex items-center justify-center">
             <span
               className="text-red-600 text-3xl cursor-pointer mr-4"
               onClick={handleEdit}
             >
-              Edit
+              <AiFillEdit/>
             </span>
             <span
               className="text-red-600 text-3xl cursor-pointer"
               onClick={handleDelete}
             >
-              X
+              <AiFillDelete/>
             </span>
           </div>
         </li>
