@@ -6,9 +6,15 @@ const TodoForm = () => {
   const [todoList, setToDoList] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editTaskName, setEditTaskName] = useState("");
+  const [error, setError] = useState("");
 
   const handleForm = (e) => {
     e.preventDefault();
+    if (todo.trim() === "") {
+      setError("Task name cannot be empty");
+      return;
+    }
+
     if (editMode) {
       const updatedList = todoList.map((task) => {
         if (task.todoName === editTaskName) {
@@ -23,6 +29,7 @@ const TodoForm = () => {
       setToDoList([...todoList, { todoName: todo }]);
     }
     setToDo("");
+    setError("");
   };
 
   const deleteTask = (taskName) => {
@@ -49,6 +56,7 @@ const TodoForm = () => {
           value={todo}
           onChange={(e) => setToDo(e.target.value)}
         />
+        {error && <p className="text-red-500 mb-3">{error}</p>}
         <button
           type="submit"
           className="bg-blue-400 text-white py-3 px-8 rounded-lg mb-5"
@@ -56,17 +64,15 @@ const TodoForm = () => {
           {editMode ? "Update Task" : "Create Task"}
         </button>
       </form>
-      <div className="flex flex-col space-y-4">
-        {todoList.map((singleToDo) => (
-          <div key={singleToDo.todoName}>
-            <ToDoShow
-              singleToDo={singleToDo}
-              deleteTask={deleteTask}
-              editTask={editTask}
-            />
-          </div>
-        ))}
-      </div>
+      {todoList.map((singleToDo) => (
+        <div key={singleToDo.todoName} className="">
+          <ToDoShow
+            singleToDo={singleToDo}
+            deleteTask={deleteTask}
+            editTask={editTask}
+          />
+        </div>
+      ))}
     </div>
   );
 };
