@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToDoShow from "./ToDoShow";
+import axios from "axios";
 
 const TodoForm = () => {
   const [todo, setToDo] = useState("");
@@ -7,6 +8,32 @@ const TodoForm = () => {
   const [editMode, setEditMode] = useState(false);
   const [editTaskName, setEditTaskName] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchTasks(); // Fetch tasks when the component mounts
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/tasks");
+      const tasks = response.data;
+      setToDoList(tasks);
+      console.log(tasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  const createTask = async (task) => {
+    try {
+      const response = await axios.post("http://localhost:3000/tasks", task);
+      const newTask = response.data;
+      // Update the todoList state with the new task
+      setToDoList([...todoList, newTask]);
+    } catch (error) {
+      console.error("Error creating task:", error);
+    }
+  };
 
   const handleForm = (e) => {
     e.preventDefault();
@@ -17,8 +44,8 @@ const TodoForm = () => {
 
     if (editMode) {
       const updatedList = todoList.map((task) => {
-        if (task.todoName === editTaskName) {
-          return { ...task, todoName: todo };
+        if (task.description === editTaskName) {
+          return { ...task, description: todo };
         }
         return task;
       });
@@ -26,34 +53,46 @@ const TodoForm = () => {
       setEditMode(false);
       setEditTaskName("");
     } else {
-      setToDoList([...todoList, { todoName: todo, completed: false }]);
+      createTask({ description: todo, completed: false });
     }
     setToDo("");
     setError("");
   };
 
-  const deleteTask = (taskName) => {
-    const newTodoList = todoList.filter((task) => task.todoName !== taskName);
-    setToDoList(newTodoList);
-  };
-
-  const editTask = (taskName) => {
-    setEditMode(true);
-    setEditTaskName(taskName);
-    const task = todoList.find((task) => task.todoName === taskName);
-    if (task) {
-      setToDo(task.todoName);
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/tasks/${id}`);
+      const newTodoList = todoList.filter((task) => task.id !== id);
+      setToDoList(newTodoList);
+    } catch (error) {
+      console.error("Error deleting task:", error);
     }
   };
 
-  const markAsCompleted = (taskName) => {
-    const updatedList = todoList.map((task) => {
-      if (task.todoName === taskName) {
-        return { ...task, completed: true };
-      }
-      return task;
-    });
-    setToDoList(updatedList);
+ 
+  const editTask = (taskName) => {
+    setEditMode(true);
+    setEditTaskName(taskName);
+    const task = todoList.find((task) => task.description === taskName);
+    if (task) {
+      setToDo(task.description);
+    }
+  };
+
+  const markAsCompleted = async (id) => {
+    try {
+      const updatedTask = { completed: true };
+      await axios.patch(`http://localhost:3000/tasks/${id}`, updatedTask);
+      const updatedList = todoList.map((task) => {
+        if (task.id === id) {
+          return { ...task, completed: true };
+        }
+        return task;
+      });
+      setToDoList(updatedList);
+    } catch (error) {
+      console.error("Error marking task as completed:", error);
+    }
   };
 
   return (
@@ -75,7 +114,7 @@ const TodoForm = () => {
         </button>
       </form>
       {todoList.map((singleToDo) => (
-        <div key={singleToDo.todoName} className="">
+        <div key={singleToDo.description} className="">
           <ToDoShow
             singleToDo={singleToDo}
             deleteTask={deleteTask}
