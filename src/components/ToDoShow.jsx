@@ -9,15 +9,15 @@ export default function ToDoShow({
   markAsCompleted,
 }) {
   const handleDelete = () => {
-    deleteTask(singleToDo.todoName);
+    deleteTask(singleToDo.id);
   };
 
   const handleEdit = () => {
-    editTask(singleToDo.todoName);
+    editTask(singleToDo.description);
   };
 
   const handleComplete = () => {
-    markAsCompleted(singleToDo.todoName);
+    markAsCompleted(singleToDo.id);
   };
 
   return (
@@ -36,12 +36,10 @@ export default function ToDoShow({
           <span
             onClick={handleComplete}
             className={`cursor-pointer mr-4 ${
-              singleToDo.completed
-                ? "text-gray-300 line-through"
-                : "text-gray-100"
+              singleToDo.completed ? "line-through" : ""
             }`}
           >
-            {singleToDo.todoName}
+            {singleToDo.description}
           </span>
           <div className="flex items-center">
             <motion.span
