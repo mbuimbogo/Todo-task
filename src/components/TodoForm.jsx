@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ToDoShow from "./ToDoShow";
 import axios from "axios";
+import API_BASE_URL from "../../config";
 
 const TodoForm = () => {
   const [todo, setToDo] = useState("");
@@ -15,7 +16,7 @@ const TodoForm = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/tasks");
+      const response = await axios.get(`${API_BASE_URL}/tasks`);
       const tasks = response.data;
       setToDoList(tasks);
       console.log(tasks);
@@ -26,7 +27,7 @@ const TodoForm = () => {
 
   const createTask = async (task) => {
     try {
-      const response = await axios.post("http://localhost:3000/tasks", task);
+      const response = await axios.post(`${API_BASE_URL}/tasks`, task);
       const newTask = response.data;
       // Update the todoList state with the new task
       setToDoList([...todoList, newTask]);
@@ -61,7 +62,7 @@ const TodoForm = () => {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/tasks/${id}`);
+      await axios.delete(`${API_BASE_URL}/tasks/${id}`);
       const newTodoList = todoList.filter((task) => task.id !== id);
       setToDoList(newTodoList);
     } catch (error) {
@@ -82,7 +83,7 @@ const TodoForm = () => {
   const markAsCompleted = async (id) => {
     try {
       const updatedTask = { completed: true };
-      await axios.patch(`http://localhost:3000/tasks/${id}`, updatedTask);
+      await axios.patch(`${API_BASE_URL}/tasks/${id}`, updatedTask);
       const updatedList = todoList.map((task) => {
         if (task.id === id) {
           return { ...task, completed: true };
